@@ -165,7 +165,7 @@
 				DEVELOPMENT_TEAM = MXGCKXDXUM;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TodayWeather/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "오늘의날씨";
+				INFOPLIST_KEY_CFBundleDisplayName = "조우현";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -198,7 +198,7 @@
 				DEVELOPMENT_TEAM = MXGCKXDXUM;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TodayWeather/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "오늘의날씨";
+				INFOPLIST_KEY_CFBundleDisplayName = "조우현";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

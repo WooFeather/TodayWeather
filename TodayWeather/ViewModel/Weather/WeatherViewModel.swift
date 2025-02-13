@@ -12,11 +12,11 @@ final class WeatherViewModel: BaseViewModel {
     private(set) var output: Output
     
     struct Input {
-        
+        let searchBarButtonItemTapped: Observable<Void> = Observable(())
     }
     
     struct Output {
-        
+        let searchBarButtonItemTapped: Observable<Void> = Observable(())
     }
     
     // MARK: - Initializer
@@ -34,6 +34,8 @@ final class WeatherViewModel: BaseViewModel {
     
     // MARK: - Functions
     func transform() {
-        
+        input.searchBarButtonItemTapped.bind { [weak self] _ in
+            self?.output.searchBarButtonItemTapped.value = ()
+        }
     }
 }
