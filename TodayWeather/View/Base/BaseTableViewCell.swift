@@ -25,8 +25,8 @@ class BaseTableViewCell: UITableViewCell {
     func configureView() { }
     
     func configureCell() {
-//        backgroundColor = .clear
-//        selectionStyle = .none
+        backgroundColor = .clear
+        selectionStyle = .none
     }
     
     @available(*, unavailable)

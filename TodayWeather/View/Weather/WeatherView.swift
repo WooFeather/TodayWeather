@@ -10,22 +10,35 @@ import SnapKit
 
 final class WeatherView: BaseView {
     
-    lazy var pagingTableView = UITableView()
+    lazy var weatherTableView = UITableView()
+    let titleLabel = UILabel()
     
     override func configureHierarchy() {
-        addSubview(pagingTableView)
+        addSubview(titleLabel)
+        addSubview(weatherTableView)
     }
     
     override func configureLayout() {
-        pagingTableView.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalTo(safeAreaLayoutGuide)
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(safeAreaLayoutGuide)
+            make.leading.equalTo(16)
+            make.height.equalTo(40)
+        }
+        
+        weatherTableView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(12)
+            make.horizontalEdges.equalToSuperview()
             make.bottom.equalToSuperview()
         }
     }
     
     override func configureView() {
-        pagingTableView.isPagingEnabled = true
-        pagingTableView.insetsLayoutMarginsFromSafeArea = false
-        pagingTableView.backgroundColor = .brown
+        titleLabel.text = "국가이름, 도시"
+        titleLabel.font = .boldSystemFont(ofSize: 36)
+        
+        weatherTableView.isPagingEnabled = true
+        weatherTableView.showsVerticalScrollIndicator = false
+        weatherTableView.separatorStyle = .none
+        weatherTableView.backgroundColor = .clear
     }
 }
