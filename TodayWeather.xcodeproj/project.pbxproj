@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		79D3B70A2D5DD8BF005F5655 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 79D3B7092D5DD8BF005F5655 /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		79D3B5F32D5DD60A005F5655 /* TodayWeather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodayWeather.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		79D3B7092D5DD8BF005F5655 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,6 +50,7 @@
 		79D3B5EA2D5DD60A005F5655 = {
 			isa = PBXGroup;
 			children = (
+				79D3B7092D5DD8BF005F5655 /* .gitignore */,
 				79D3B5F52D5DD60A005F5655 /* TodayWeather */,
 				79D3B5F42D5DD60A005F5655 /* Products */,
 			);
@@ -122,6 +128,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79D3B70A2D5DD8BF005F5655 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
