@@ -19,6 +19,25 @@ final class CitySearchViewController: BaseViewController {
     
     override func configureView() {
         navigationItem.title = "도시 검색"
-        navigationItem.largeTitleDisplayMode = .never
+        citySearchView.emptyLabel.isHidden = true
+    }
+    
+    override func configureData() {
+        citySearchView.cityTableView.delegate = self
+        citySearchView.cityTableView.dataSource = self
+        citySearchView.cityTableView.register(CityTableViewCell.self, forCellReuseIdentifier: CityTableViewCell.id)
+    }
+}
+
+// MARK: - Extension
+extension CitySearchViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        20
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CityTableViewCell.id, for: indexPath) as? CityTableViewCell else { return UITableViewCell() }
+        
+        return cell
     }
 }
