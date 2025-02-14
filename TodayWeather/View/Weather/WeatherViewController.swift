@@ -27,8 +27,9 @@ final class WeatherViewController: BaseViewController {
     override func configureData() {
         weatherView.weatherTableView.delegate = self
         weatherView.weatherTableView.dataSource = self
-        weatherView.weatherTableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.id)
-        weatherView.weatherTableView.register(ForecastTableViewCell.self, forCellReuseIdentifier: ForecastTableViewCell.id)
+        weatherView.weatherTableView.register(TestTableViewCell.self, forCellReuseIdentifier: TestTableViewCell.id)
+//        weatherView.weatherTableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.id)
+//        weatherView.weatherTableView.register(ForecastTableViewCell.self, forCellReuseIdentifier: ForecastTableViewCell.id)
     }
     
     override func configureView() {
@@ -53,26 +54,38 @@ final class WeatherViewController: BaseViewController {
 
 // MARK: - Extension
 
+//extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        2
+//    }
+//    
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        if indexPath.row == 0 {
+//            guard let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.id, for: indexPath) as? WeatherTableViewCell else { return UITableViewCell() }
+//            
+//            return cell
+//        } else {
+//            guard let cell = tableView.dequeueReusableCell(withIdentifier: ForecastTableViewCell.id, for: indexPath) as? ForecastTableViewCell else { return UITableViewCell() }
+//            
+//            return cell
+//        }
+//    }
+//    
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        let deviceHeight = UIScreen.main.bounds.height
+//        let navBarHeight = (view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0) + (self.navigationController?.navigationBar.frame.height ?? 0.0) + 40 + 12
+////        return deviceHeight - navBarHeight
+//    }
+//}
+
 extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        2
+        8
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row == 0 {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.id, for: indexPath) as? WeatherTableViewCell else { return UITableViewCell() }
-            
-            return cell
-        } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: ForecastTableViewCell.id, for: indexPath) as? ForecastTableViewCell else { return UITableViewCell() }
-            
-            return cell
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let deviceHeight = UIScreen.main.bounds.height
-        let navBarHeight = (view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0) + (self.navigationController?.navigationBar.frame.height ?? 0.0) + 40 + 12
-        return deviceHeight - navBarHeight
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TestTableViewCell.id, for: indexPath) as? TestTableViewCell else { return UITableViewCell() }
+        
+        return cell
     }
 }
