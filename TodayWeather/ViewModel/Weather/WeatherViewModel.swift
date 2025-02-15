@@ -13,14 +13,14 @@ final class WeatherViewModel: BaseViewModel {
 //    private var cityIdList: [String]?
     
     struct Input {
-        let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
+        let viewWillAppearTrigger: Observable<Void> = Observable(())
         let searchBarButtonItemTapped: Observable<Void> = Observable(())
     }
     
     struct Output {
         let searchBarButtonItemTapped: Observable<Void> = Observable(())
         let countryNameAndCityName: Observable<(String, String)> = Observable(("", ""))
-        let selectedId: Observable<Int> = Observable(1835848)
+        let selectedId: Observable<Int> = Observable(1835848) // TODO: UserDefaults에 저장된 id 사용
     }
     
     // MARK: - Initializer
@@ -38,7 +38,8 @@ final class WeatherViewModel: BaseViewModel {
     
     // MARK: - Functions
     func transform() {
-        input.viewDidLoadTrigger.lazyBind { [weak self] _ in
+        input.viewWillAppearTrigger.lazyBind { [weak self] _ in
+            self?.receiveId()
             self?.parseJSON()
         }
         
@@ -64,6 +65,7 @@ final class WeatherViewModel: BaseViewModel {
                 // TODO: index찾는 로직 함수화
                 for index in 0..<city.cities.count {
                     if city.cities[index].id == output.selectedId.value {
+                        print("4️⃣ parsing", output.selectedId.value)
                         output.countryNameAndCityName.value = (
                             city.cities[index].koCountryName,
                             city.cities[index].koCityName
@@ -117,4 +119,25 @@ final class WeatherViewModel: BaseViewModel {
 //            return arrayIndex
 //        }
 //    }
+    
+    // TODO: id를 받아온 이후, UserDefaults에 저장하고, 추후에 데이터 파싱시 UserDefaults에 저장된 id 사용
+    private func receiveId() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(idReceivedNotification),
+            name: Notification.Name("IdReceived"),
+            object: nil
+        )
+    }
+    
+    @objc
+    private func idReceivedNotification(value: NSNotification) {
+        if let id = value.userInfo!["idValue"] as? Int {
+            output.selectedId.value = id
+            print("3️⃣ receive success", output.selectedId.value)
+        } else {
+            output.selectedId.value = 1835848
+            print("3️⃣ receive fail", output.selectedId.value)
+        }
+    }
 }

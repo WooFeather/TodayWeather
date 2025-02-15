@@ -13,10 +13,12 @@ final class CitySearchViewModel: BaseViewModel {
     
     struct Input {
         let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
+        let didSelectRowAt: Observable<Int?> = Observable(nil)
     }
     
     struct Output {
         let cityList: Observable<[CityDetail]> = Observable([])
+        let didSelectRowAt: Observable<Void?> = Observable(nil)
     }
     
     // MARK: - Initializer
@@ -36,6 +38,12 @@ final class CitySearchViewModel: BaseViewModel {
     func transform() {
         input.viewDidLoadTrigger.lazyBind { [weak self] _ in
             self?.parseJSON()
+        }
+        
+        input.didSelectRowAt.lazyBind { [weak self] id in
+            guard let idValue = id else { return }
+            self?.postId(idValue: idValue)
+            self?.output.didSelectRowAt.value = ()
         }
     }
     
@@ -102,5 +110,16 @@ final class CitySearchViewModel: BaseViewModel {
                 print("data가 없거나 decoding실패")
             }
         }.resume()
+    }
+    
+    private func postId(idValue: Int) {
+        NotificationCenter.default.post(
+            name: NSNotification.Name("IdReceived"),
+            object: nil,
+            userInfo: [
+                "idValue": idValue
+            ]
+        )
+        print("1️⃣", idValue)
     }
 }

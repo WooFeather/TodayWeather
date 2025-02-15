@@ -17,9 +17,13 @@ final class WeatherViewController: BaseViewController {
         view = weatherView
     }
     
-    override func bindData() {
-        viewModel.input.viewDidLoadTrigger.value = ()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
+        viewModel.input.viewWillAppearTrigger.value = ()
+    }
+    
+    override func bindData() {
         viewModel.output.searchBarButtonItemTapped.lazyBind { [weak self] _ in
             let vc = CitySearchViewController()
             self?.navigationController?.pushViewController(vc, animated: true)

@@ -19,6 +19,11 @@ final class CitySearchViewController: BaseViewController {
     
     override func bindData() {
         viewModel.input.viewDidLoadTrigger.value = ()
+        
+        viewModel.output.didSelectRowAt.lazyBind { [weak self] _ in
+            print("2️⃣ pop")
+            self?.navigationController?.popViewController(animated: true)
+        }
     }
     
     override func configureView() {
@@ -47,5 +52,10 @@ extension CitySearchViewController: UITableViewDelegate, UITableViewDataSource {
         cell.configureData(data: data)
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let data = viewModel.output.cityList.value[indexPath.row]
+        viewModel.input.didSelectRowAt.value = data.id
     }
 }
