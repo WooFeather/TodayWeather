@@ -17,6 +17,10 @@ final class CitySearchViewController: BaseViewController {
         view = citySearchView
     }
     
+    override func bindData() {
+        viewModel.input.viewDidLoadTrigger.value = ()
+    }
+    
     override func configureView() {
         navigationItem.title = "도시 검색"
         citySearchView.emptyLabel.isHidden = true
@@ -32,11 +36,15 @@ final class CitySearchViewController: BaseViewController {
 // MARK: - Extension
 extension CitySearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        20
+        viewModel.output.cityList.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CityTableViewCell.id, for: indexPath) as? CityTableViewCell else { return UITableViewCell() }
+        
+        let data = viewModel.output.cityList.value[indexPath.row]
+        
+        cell.configureData(data: data)
         
         return cell
     }

@@ -74,10 +74,8 @@ final class CityTableViewCell: BaseTableViewCell {
             self.roundBackgroundView.layer.cornerRadius = self.roundBackgroundView.frame.width / 20
         }
         
-        cityLabel.text = "테스트"
         cityLabel.font = .boldSystemFont(ofSize: 17)
         
-        countryLabel.text = "테스트나라입니다"
         countryLabel.font = .boldSystemFont(ofSize: 12)
         countryLabel.textColor = .gray
         
@@ -93,5 +91,10 @@ final class CityTableViewCell: BaseTableViewCell {
         
         temperatureLabel.text = "-88°"
         temperatureLabel.font = .boldSystemFont(ofSize: 30)
+    }
+    
+    func configureData(data: CityDetail) {
+        cityLabel.text = data.koCityName
+        countryLabel.text = data.koCountryName
     }
 }
