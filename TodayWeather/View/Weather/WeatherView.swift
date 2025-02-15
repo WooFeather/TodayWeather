@@ -70,7 +70,7 @@ final class WeatherView: BaseView {
     }
     
     override func configureView() {
-        titleLabel.text = "국가이름, 도시"
+//        titleLabel.text = "국가이름, 도시"
         titleLabel.font = .boldSystemFont(ofSize: 36)
         
         weatherScrollView.backgroundColor = .clear

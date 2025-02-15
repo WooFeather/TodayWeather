@@ -18,9 +18,15 @@ final class WeatherViewController: BaseViewController {
     }
     
     override func bindData() {
+        viewModel.input.viewDidLoadTrigger.value = ()
+        
         viewModel.output.searchBarButtonItemTapped.lazyBind { [weak self] _ in
             let vc = CitySearchViewController()
             self?.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        viewModel.output.countryNameAndCityName.bind { [weak self] (country, city) in
+            self?.weatherView.titleLabel.text = "\(country), \(city)"
         }
     }
     
