@@ -80,11 +80,13 @@ final class WeatherViewController: BaseViewController {
 
 extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        8
+        6
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TestTableViewCell.id, for: indexPath) as? TestTableViewCell else { return UITableViewCell() }
+        
+        
         
         return cell
     }

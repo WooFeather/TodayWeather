@@ -39,7 +39,7 @@ final class TestTableViewCell: BaseTableViewCell {
     override func configureView() {
         roundBackgroundView.backgroundColor = .white
         DispatchQueue.main.async {
-            self.roundBackgroundView.layer.cornerRadius = self.roundBackgroundView.frame.width / 20
+            self.roundBackgroundView.layer.cornerRadius = self.roundBackgroundView.frame.width / 50
         }
         
         weatherLabel.text = "오늘의 날씨는 맑음 입니다"

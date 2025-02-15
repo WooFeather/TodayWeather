@@ -10,21 +10,22 @@ import SnapKit
 
 final class WeatherView: BaseView {
     
-//    lazy var weatherTableView = UITableView()
     private let weatherScrollView = UIScrollView()
     private let contentView = UIView()
     let weatherTableView = UITableView()
+    let weatherTableHeaderView = UILabel()
+    let weatherTableFooterView = UIButton()
     let forecastView = UIView()
     let titleLabel = UILabel()
 
     
     override func configureHierarchy() {
         addSubview(titleLabel)
-//        addSubview(weatherTableView)
         addSubview(weatherScrollView)
         weatherScrollView.addSubview(contentView)
-        contentView.addSubview(weatherTableView)
-        contentView.addSubview(forecastView)
+        [weatherTableView, forecastView, weatherTableHeaderView, weatherTableFooterView].forEach {
+            contentView.addSubview($0)
+        }
     }
     
     override func configureLayout() {
@@ -45,57 +46,58 @@ final class WeatherView: BaseView {
         }
         
         weatherTableView.snp.makeConstraints { make in
-            make.top.equalTo(contentView)
-            make.horizontalEdges.equalTo(contentView)
-            make.height.equalTo(weatherScrollView.snp.height)
+            make.top.horizontalEdges.equalTo(contentView)
+            make.height.equalTo(weatherScrollView)
         }
         
         forecastView.snp.makeConstraints { make in
             make.top.equalTo(weatherTableView.snp.bottom)
-            make.horizontalEdges.equalTo(contentView)
-            make.height.equalTo(weatherScrollView.snp.height)
-            make.bottom.equalTo(contentView)
+            make.bottom.horizontalEdges.equalTo(contentView)
+            make.height.equalTo(weatherScrollView)
         }
         
-//        weatherTableView.snp.makeConstraints { make in
-//            make.top.horizontalEdges.equalToSuperview()
-//            make.height.equalTo(weatherScrollView.snp.height)
-//        }
+        weatherTableHeaderView.snp.makeConstraints { make in
+            make.height.equalTo(50)
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview().offset(12)
+        }
         
-//        weatherTableView.snp.makeConstraints { make in
-//            make.top.equalTo(titleLabel.snp.bottom).offset(12)
-//            make.horizontalEdges.equalToSuperview()
-//            make.bottom.equalToSuperview()
-//        }
+        weatherTableFooterView.snp.makeConstraints { make in
+            make.centerX.equalTo(contentView)
+            // 이부분을 contentView나 tableView의 bottom으로 잡으면 안되네..
+            make.bottom.equalTo(forecastView.snp.top).offset(-40)
+        }
     }
     
     override func configureView() {
         titleLabel.text = "국가이름, 도시"
         titleLabel.font = .boldSystemFont(ofSize: 36)
         
-        weatherScrollView.backgroundColor = .brown
+        weatherScrollView.backgroundColor = .clear
         weatherScrollView.isPagingEnabled = true
         weatherScrollView.showsVerticalScrollIndicator = false
-//        weatherScrollView.contentSize = CGSize(width: self.frame.width, height: weatherScrollView.frame.height * CGFloat(pages.count))
-//        
-//        for (index, page) in pages.enumerated() {
-//            page.frame = CGRect(
-//                x: 0,
-//                y: weatherScrollView.frame.height * CGFloat(index),
-//                width: weatherScrollView.frame.width,
-//                height: weatherScrollView.frame.height
-//            )
-//            weatherScrollView.addSubview(page)
-//        }
         
-        forecastView.backgroundColor = .gray
+        weatherTableHeaderView.text = "8월 88일(목) 오후 88시 88분"
+        weatherTableHeaderView.font = .boldSystemFont(ofSize: 17)
         
-        weatherTableView.backgroundColor = .red
+        var config = UIButton.Configuration.plain()
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 10)
+        config.preferredSymbolConfigurationForImage = imageConfig
+        config.title = "5일간 예보 보러가기"
+        config.image = UIImage(systemName: "chevron.down.2")
+        config.imagePlacement = .leading
+        config.buttonSize = .small
+        weatherTableFooterView.configuration = config
+        weatherTableFooterView.tintColor = .black
+        
+        weatherTableView.separatorStyle = .none
+        weatherTableView.backgroundColor = .clear
         weatherTableView.isScrollEnabled = false
+        weatherTableView.tableHeaderView = weatherTableHeaderView
+        weatherTableView.tableFooterView = weatherTableFooterView
+        weatherTableHeaderView.layoutIfNeeded()
+        weatherTableFooterView.layoutIfNeeded()
         
-//        weatherTableView.isPagingEnabled = true
-//        weatherTableView.showsVerticalScrollIndicator = false
-//        weatherTableView.separatorStyle = .none
-//        weatherTableView.backgroundColor = .clear
+        forecastView.backgroundColor = .clear
     }
 }
