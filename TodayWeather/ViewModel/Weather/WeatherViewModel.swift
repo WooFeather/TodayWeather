@@ -11,6 +11,7 @@ final class WeatherViewModel: BaseViewModel {
     private(set) var input: Input
     private(set) var output: Output
 //    private var cityIdList: [String]?
+    private let words = WeatherWords.allCases
     
     struct Input {
         let viewWillAppearTrigger: Observable<Void> = Observable(())
@@ -115,7 +116,15 @@ final class WeatherViewModel: BaseViewModel {
                 let iconUrl = "https://openweathermap.org/img/wn/\(result.weather[0].icon)@2x.png"
                 
                 self?.output.iconUrl.value = iconUrl
-                self?.output.weatherWord.value = result.weather[0].word
+                
+                for i in 0..<(self?.words.count ?? 0) {
+                    if result.weather[0].word == self?.words[i].rawValue {
+                        self?.output.weatherWord.value = self?.words[i].koreanWord ?? ""
+                    } else {
+                        self?.output.weatherWord.value = "알 수 없음"
+                    }
+                }
+                
                 self?.output.nowTemp.value = result.main.temp
                 self?.output.lowTempAndHighTemp.value = (
                     result.main.tempMax,

@@ -80,6 +80,9 @@ extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
         if indexPath.row == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: IconTableViewCell.id, for: indexPath) as? IconTableViewCell else { return UITableViewCell() }
             
+            let weatherWord = viewModel.output.weatherWord.value
+            let words = WeatherWords.allCases
+            
             cell.weatherIcon.kf.setImage(with: URL(string: viewModel.output.iconUrl.value))
             
             cell.weatherLabel.text = "오늘의 날씨는 \(viewModel.output.weatherWord.value)입니다."
