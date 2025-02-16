@@ -47,11 +47,11 @@ final class WeatherViewModel: BaseViewModel {
         input.viewWillAppearTrigger.lazyBind { [weak self] _ in
             self?.receiveId()
             self?.parseJSON()
-            self?.callRequest(id: "\(self?.output.selectedId.value ?? 1835848)")
+            self?.callGroupWeatherAPI(id: "\(self?.output.selectedId.value ?? 1835848)")
         }
         
         input.refreshBarButtonItemTapped.lazyBind { [weak self] _ in
-            self?.callRequest(id: "\(self?.output.selectedId.value ?? 1835848)")
+            self?.callGroupWeatherAPI(id: "\(self?.output.selectedId.value ?? 1835848)")
         }
         
         input.searchBarButtonItemTapped.bind { [weak self] _ in
@@ -87,30 +87,11 @@ final class WeatherViewModel: BaseViewModel {
         }
     }
     
-    private func callRequest(id: String) {
-        let request = URLRequest(url: OpenWeatherRequest.groupSearch(id: id).endpoint)
-        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-            print(request.url ?? "URL 없음")
-            if let error = error {
-                // TODO: Alert띄우기
-                print(error)
-                return
-            }
-            
-            guard let response = response as? HTTPURLResponse,
-                  (200..<300).contains(response.statusCode) else {
-                // TODO: 상태코드 대응
-                print(response ?? "")
-                return
-            }
-            
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            
-            if let data = data,
-               let weatherData = try? decoder.decode(GroupWeather.self, from: data) {
-                dump(weatherData)
-                let result = weatherData.list[0]
+    private func callGroupWeatherAPI(id: String) {
+        NetworkManager.shared.callOpenWeatherAPI(api: .groupSearch(id: id), type: GroupWeather.self) { [weak self] response in
+            switch response {
+            case .success(let value):
+                let result = value.list[0]
                 
                 self?.output.dateString.value = Date().toStringUTC(result.time.timezone, format: "M월 d일(E) a h시 m분")
                 
@@ -147,12 +128,12 @@ final class WeatherViewModel: BaseViewModel {
                 }
                 
                 print(self?.output.cellStringList.value ?? "")
-            } else {
-                print("data가 없거나 decoding실패")
+                self?.output.callRequest.value = ()
+            case .failure(let error):
+                // TODO: Alert 띄우기
+                print(error)
             }
-            
-            self?.output.callRequest.value = ()
-        }.resume()
+        }
     }
     
 //    private func findIndex(array: [CityDetail]) -> Int {
