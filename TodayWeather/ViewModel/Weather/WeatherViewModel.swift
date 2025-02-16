@@ -15,12 +15,14 @@ final class WeatherViewModel: BaseViewModel {
     struct Input {
         let viewWillAppearTrigger: Observable<Void> = Observable(())
         let searchBarButtonItemTapped: Observable<Void> = Observable(())
+        let refreshBarButtonItemTapped: Observable<Void> = Observable(())
     }
     
     struct Output {
         let searchBarButtonItemTapped: Observable<Void> = Observable(())
         let countryNameAndCityName: Observable<(String, String)> = Observable(("", ""))
         let selectedId: Observable<Int> = Observable(1835848) // TODO: UserDefaults에 저장된 id 사용
+        let dateString: Observable<String> = Observable("")
         let iconUrl: Observable<String> = Observable("")
         let weatherWord: Observable<String> = Observable("")
         let cellStringList: Observable<[String]> = Observable([])
@@ -45,6 +47,10 @@ final class WeatherViewModel: BaseViewModel {
         input.viewWillAppearTrigger.lazyBind { [weak self] _ in
             self?.receiveId()
             self?.parseJSON()
+            self?.callRequest(id: "\(self?.output.selectedId.value ?? 1835848)")
+        }
+        
+        input.refreshBarButtonItemTapped.lazyBind { [weak self] _ in
             self?.callRequest(id: "\(self?.output.selectedId.value ?? 1835848)")
         }
         
@@ -108,6 +114,8 @@ final class WeatherViewModel: BaseViewModel {
                 dump(weatherData)
                 let result = weatherData.list[0]
                 
+                self?.output.dateString.value = Date().toStringUTC(result.time.timezone)
+                
                 let iconUrl = "https://openweathermap.org/img/wn/\(result.weather[0].icon)@2x.png"
                 
                 self?.output.iconUrl.value = iconUrl
@@ -122,6 +130,7 @@ final class WeatherViewModel: BaseViewModel {
                 // cell에 들어갈 날씨 정보 초기화
                 self?.output.cellStringList.value = []
                 
+                // TODO: 텍스트 일부만 폰트 변경
                 ["현재 온도는 \(result.main.temp)° 입니다. 최저\(result.main.tempMin) 최고\(result.main.tempMax)",
                  "체감 온도는 \(result.main.feelsLike)° 입니다.",
                  "\(self?.output.countryNameAndCityName.value.1 ?? "도시")의 일출 시각은 \(result.time.sunrise), 일몰 시각은 \(result.time.sunset) 입니다.",

@@ -27,6 +27,7 @@ struct Weather: Decodable {
 }
 
 struct TimeDetail: Decodable {
+    let timezone: Int
     let sunrise: Int
     let sunset: Int
 }

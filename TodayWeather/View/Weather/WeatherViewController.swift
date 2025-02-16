@@ -40,9 +40,9 @@ final class WeatherViewController: BaseViewController {
             }
         }
         
-        viewModel.output.cellStringList.lazyBind { [weak self] _ in
+        viewModel.output.dateString.lazyBind { [weak self] text in
             DispatchQueue.main.async {
-                self?.weatherView.weatherTableView.reloadData()
+                self?.weatherView.weatherTableHeaderView.text = text
             }
         }
     }
@@ -71,7 +71,7 @@ final class WeatherViewController: BaseViewController {
     @objc
     private func refreshBarButtonItemTapped() {
         print(#function)
-        // TODO: 현재 날씨를 업데이트
+        viewModel.input.refreshBarButtonItemTapped.value = ()
     }
 }
 
