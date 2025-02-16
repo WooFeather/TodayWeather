@@ -17,7 +17,7 @@ enum OpenWeatherRequest {
     var endpoint: URL {
         switch self {
         case .groupSearch(let id):
-            return URL(string: baseURL + "group?id=\(id),&appid=\(APIKey.openWeatherAPIKey)")!
+            return URL(string: baseURL + "group?id=\(id)&units=metric&appid=\(APIKey.openWeatherAPIKey)")!
         }
     }
 }

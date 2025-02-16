@@ -30,12 +30,13 @@ final class IconTableViewCell: BaseTableViewCell {
         }
         
         weatherIcon.snp.makeConstraints { make in
-            make.top.leading.equalTo(roundBackgroundView).offset(12)
-            make.size.equalTo(21)
+            make.centerY.equalTo(roundBackgroundView.snp.centerY)
+            make.leading.equalTo(roundBackgroundView.snp.leading).offset(8)
+            make.size.equalTo(40)
         }
         
         weatherLabel.snp.makeConstraints { make in
-            make.leading.equalTo(weatherIcon.snp.trailing).offset(12)
+            make.leading.equalTo(weatherIcon.snp.trailing).offset(8)
             make.verticalEdges.trailing.equalTo(roundBackgroundView).inset(12)
         }
     }
@@ -44,9 +45,8 @@ final class IconTableViewCell: BaseTableViewCell {
         roundBackgroundView.backgroundColor = .white
         roundBackgroundView.layer.cornerRadius = 6
         
-        weatherIcon.image = UIImage(systemName: "sun.snow.fill")
+        weatherIcon.contentMode = .scaleAspectFill
         
-        weatherLabel.text = "오늘의 날씨는 맑음입니다"
         weatherLabel.numberOfLines = 2
         weatherLabel.font = .systemFont(ofSize: 17)
     }

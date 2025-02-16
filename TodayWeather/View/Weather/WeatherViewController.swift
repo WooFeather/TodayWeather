@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class WeatherViewController: BaseViewController {
     
@@ -31,6 +32,12 @@ final class WeatherViewController: BaseViewController {
         
         viewModel.output.countryNameAndCityName.bind { [weak self] (country, city) in
             self?.weatherView.titleLabel.text = "\(country), \(city)"
+        }
+        
+        viewModel.output.callRequest.lazyBind { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.weatherView.weatherTableView.reloadData()
+            }
         }
     }
     
@@ -72,6 +79,10 @@ extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: IconTableViewCell.id, for: indexPath) as? IconTableViewCell else { return UITableViewCell() }
+            
+            cell.weatherIcon.kf.setImage(with: URL(string: viewModel.output.iconUrl.value))
+            
+            cell.weatherLabel.text = "오늘의 날씨는 \(viewModel.output.weatherWord.value)입니다."
             
             return cell
         } else if indexPath.row == 5 {

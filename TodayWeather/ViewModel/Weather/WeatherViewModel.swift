@@ -21,6 +21,14 @@ final class WeatherViewModel: BaseViewModel {
         let searchBarButtonItemTapped: Observable<Void> = Observable(())
         let countryNameAndCityName: Observable<(String, String)> = Observable(("", ""))
         let selectedId: Observable<Int> = Observable(1835848) // TODO: UserDefaults에 저장된 id 사용
+        let iconUrl: Observable<String> = Observable("")
+        let weatherWord: Observable<String> = Observable("")
+        let nowTemp: Observable<Double> = Observable(0.0)
+        let lowTempAndHighTemp: Observable<(Double, Double)> = Observable((0.0, 0.0))
+        let feelsLikeTemp: Observable<Double> = Observable(0.0)
+        let sunriseAndSunsetTime: Observable<(Int, Int)> = Observable((-1, -1))
+        let humidityAndWindSpeed: Observable<(Int, Double)> = Observable((-1, 0.0))
+        let callRequest: Observable<Void> = Observable(())
     }
     
     // MARK: - Initializer
@@ -41,6 +49,7 @@ final class WeatherViewModel: BaseViewModel {
         input.viewWillAppearTrigger.lazyBind { [weak self] _ in
             self?.receiveId()
             self?.parseJSON()
+            self?.callRequest(id: "\(self?.output.selectedId.value ?? 1835848)")
         }
         
         input.searchBarButtonItemTapped.bind { [weak self] _ in
@@ -80,7 +89,7 @@ final class WeatherViewModel: BaseViewModel {
     
     private func callRequest(id: String) {
         let request = URLRequest(url: OpenWeatherRequest.groupSearch(id: id).endpoint)
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             print(request.url ?? "URL 없음")
             if let error = error {
                 // TODO: Alert띄우기
@@ -101,9 +110,31 @@ final class WeatherViewModel: BaseViewModel {
             if let data = data,
                let weatherData = try? decoder.decode(GroupWeather.self, from: data) {
                 dump(weatherData)
+                let result = weatherData.list[0]
+                
+                let iconUrl = "https://openweathermap.org/img/wn/\(result.weather[0].icon)@2x.png"
+                
+                self?.output.iconUrl.value = iconUrl
+                self?.output.weatherWord.value = result.weather[0].word
+                self?.output.nowTemp.value = result.main.temp
+                self?.output.lowTempAndHighTemp.value = (
+                    result.main.tempMax,
+                    result.main.tempMin
+                )
+                self?.output.feelsLikeTemp.value = result.main.feelsLike
+                self?.output.sunriseAndSunsetTime.value = (
+                    result.time.sunrise,
+                    result.time.sunset
+                )
+                self?.output.humidityAndWindSpeed.value = (
+                    result.main.humidity,
+                    result.wind.speed
+                )
             } else {
                 print("data가 없거나 decoding실패")
             }
+            
+            self?.output.callRequest.value = ()
         }.resume()
     }
     
