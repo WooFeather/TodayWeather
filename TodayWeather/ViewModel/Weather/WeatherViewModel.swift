@@ -72,8 +72,6 @@ final class WeatherViewModel: BaseViewModel {
             city = try decoder.decode(City.self, from: jsonData)
             
             if let city = city {
-                
-                // TODO: index찾는 로직 함수화
                 for index in 0..<city.cities.count {
                     if city.cities[index].id == output.selectedId.value {
                         print("4️⃣ parsing", output.selectedId.value)
@@ -114,7 +112,7 @@ final class WeatherViewModel: BaseViewModel {
                 dump(weatherData)
                 let result = weatherData.list[0]
                 
-                self?.output.dateString.value = Date().toStringUTC(result.time.timezone)
+                self?.output.dateString.value = Date().toStringUTC(result.time.timezone, format: "M월 d일(E) a h시 m분")
                 
                 let iconUrl = "https://openweathermap.org/img/wn/\(result.weather[0].icon)@2x.png"
                 
@@ -130,10 +128,19 @@ final class WeatherViewModel: BaseViewModel {
                 // cell에 들어갈 날씨 정보 초기화
                 self?.output.cellStringList.value = []
                 
+                // 소수점 아래 자르기
+                let currentTemp = String(format: "%.1f", result.main.temp)
+                let lowTemp = String(format: "%.0f", result.main.tempMin)
+                let highTemp = String(format: "%.0f", result.main.tempMax)
+                
+                // 일출 및 일몰시간
+                let sunriseTime = self?.convertingUTCtime(result.time.sunrise).toStringUTC(result.time.timezone, format: "a h시 m분")
+                let sunsetTime = self?.convertingUTCtime(result.time.sunset).toStringUTC(result.time.timezone, format: "a h시 m분")
+                
                 // TODO: 텍스트 일부만 폰트 변경
-                ["현재 온도는 \(result.main.temp)° 입니다. 최저\(result.main.tempMin) 최고\(result.main.tempMax)",
+                ["현재 온도는 \(currentTemp)° 입니다. 최저\(lowTemp)° 최고\(highTemp)°",
                  "체감 온도는 \(result.main.feelsLike)° 입니다.",
-                 "\(self?.output.countryNameAndCityName.value.1 ?? "도시")의 일출 시각은 \(result.time.sunrise), 일몰 시각은 \(result.time.sunset) 입니다.",
+                 "\(self?.output.countryNameAndCityName.value.1 ?? "도시")의 일출 시각은 \(sunriseTime ?? ""), 일몰 시각은 \(sunsetTime ?? "") 입니다.",
                  "습도는 \(result.main.humidity)% 이고, 풍속은 \(result.wind.speed)m/s 입니다"
                 ].forEach {
                     self?.output.cellStringList.value.append($0)
@@ -157,8 +164,9 @@ final class WeatherViewModel: BaseViewModel {
 //            } else {
 //                arrayIndex = 60
 //            }
-//            return arrayIndex
 //        }
+//        
+//        return arrayIndex
 //    }
     
     // TODO: id를 받아온 이후, UserDefaults에 저장하고, 추후에 데이터 파싱시 UserDefaults에 저장된 id 사용
@@ -180,5 +188,11 @@ final class WeatherViewModel: BaseViewModel {
             output.selectedId.value = 1835848
             print("3️⃣ receive fail", output.selectedId.value)
         }
+    }
+    
+    private func convertingUTCtime(_ dt: Int) -> Date {
+        let timeInterval = TimeInterval("\(dt)")!
+        let utcTime = Date(timeIntervalSince1970: timeInterval)
+        return utcTime
     }
 }
