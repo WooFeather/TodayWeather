@@ -8,21 +8,21 @@
 import Foundation
 
 enum WeatherWords: String, CaseIterable {
-    case Thunderstorm = "Thunderstorm"
-    case Drizzle = "Drizzle"
-    case Rain = "Rain"
-    case Snow = "Snow"
-    case Mist = "Mist"
-    case Smoke = "Smoke"
-    case Haze = "Haze"
-    case Dust = "Dust"
-    case Fog = "Fog"
-    case Sand = "Sand"
-    case Ash = "Ash"
-    case Squall = "Squall"
-    case Tornado = "Tornado"
-    case Clear = "Clear"
-    case Clouds = "Clouds"
+    case Thunderstorm
+    case Drizzle
+    case Rain
+    case Snow
+    case Mist
+    case Smoke
+    case Haze
+    case Dust
+    case Fog
+    case Sand
+    case Ash
+    case Squall
+    case Tornado
+    case Clear
+    case Clouds
     
     var koreanWord: String {
         switch self {

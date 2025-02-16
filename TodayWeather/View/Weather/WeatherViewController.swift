@@ -39,6 +39,12 @@ final class WeatherViewController: BaseViewController {
                 self?.weatherView.weatherTableView.reloadData()
             }
         }
+        
+        viewModel.output.cellStringList.lazyBind { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.weatherView.weatherTableView.reloadData()
+            }
+        }
     }
     
     override func configureData() {
@@ -80,9 +86,6 @@ extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
         if indexPath.row == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: IconTableViewCell.id, for: indexPath) as? IconTableViewCell else { return UITableViewCell() }
             
-            let weatherWord = viewModel.output.weatherWord.value
-            let words = WeatherWords.allCases
-            
             cell.weatherIcon.kf.setImage(with: URL(string: viewModel.output.iconUrl.value))
             
             cell.weatherLabel.text = "오늘의 날씨는 \(viewModel.output.weatherWord.value)입니다."
@@ -94,6 +97,13 @@ extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TextTableViewCell.id, for: indexPath) as? TextTableViewCell else { return UITableViewCell() }
+            
+            if viewModel.output.cellStringList.value.isEmpty {
+                cell.weatherLabel.text = ""
+            } else {
+                let data = viewModel.output.cellStringList.value[indexPath.row - 1]
+                cell.weatherLabel.text = data
+            }
             
             return cell
         }

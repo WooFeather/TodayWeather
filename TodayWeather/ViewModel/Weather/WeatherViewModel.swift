@@ -10,7 +10,6 @@ import Foundation
 final class WeatherViewModel: BaseViewModel {
     private(set) var input: Input
     private(set) var output: Output
-//    private var cityIdList: [String]?
     private let words = WeatherWords.allCases
     
     struct Input {
@@ -24,11 +23,7 @@ final class WeatherViewModel: BaseViewModel {
         let selectedId: Observable<Int> = Observable(1835848) // TODO: UserDefaults에 저장된 id 사용
         let iconUrl: Observable<String> = Observable("")
         let weatherWord: Observable<String> = Observable("")
-        let nowTemp: Observable<Double> = Observable(0.0)
-        let lowTempAndHighTemp: Observable<(Double, Double)> = Observable((0.0, 0.0))
-        let feelsLikeTemp: Observable<Double> = Observable(0.0)
-        let sunriseAndSunsetTime: Observable<(Int, Int)> = Observable((-1, -1))
-        let humidityAndWindSpeed: Observable<(Int, Double)> = Observable((-1, 0.0))
+        let cellStringList: Observable<[String]> = Observable([])
         let callRequest: Observable<Void> = Observable(())
     }
     
@@ -117,28 +112,25 @@ final class WeatherViewModel: BaseViewModel {
                 
                 self?.output.iconUrl.value = iconUrl
                 
+                // weather word를 한글로 변환
                 for i in 0..<(self?.words.count ?? 0) {
                     if result.weather[0].word == self?.words[i].rawValue {
                         self?.output.weatherWord.value = self?.words[i].koreanWord ?? ""
-                    } else {
-                        self?.output.weatherWord.value = "알 수 없음"
                     }
                 }
                 
-                self?.output.nowTemp.value = result.main.temp
-                self?.output.lowTempAndHighTemp.value = (
-                    result.main.tempMax,
-                    result.main.tempMin
-                )
-                self?.output.feelsLikeTemp.value = result.main.feelsLike
-                self?.output.sunriseAndSunsetTime.value = (
-                    result.time.sunrise,
-                    result.time.sunset
-                )
-                self?.output.humidityAndWindSpeed.value = (
-                    result.main.humidity,
-                    result.wind.speed
-                )
+                // cell에 들어갈 날씨 정보 초기화
+                self?.output.cellStringList.value = []
+                
+                ["현재 온도는 \(result.main.temp)° 입니다. 최저\(result.main.tempMin) 최고\(result.main.tempMax)",
+                 "체감 온도는 \(result.main.feelsLike)° 입니다.",
+                 "\(self?.output.countryNameAndCityName.value.1 ?? "도시")의 일출 시각은 \(result.time.sunrise), 일몰 시각은 \(result.time.sunset) 입니다.",
+                 "습도는 \(result.main.humidity)% 이고, 풍속은 \(result.wind.speed)m/s 입니다"
+                ].forEach {
+                    self?.output.cellStringList.value.append($0)
+                }
+                
+                print(self?.output.cellStringList.value ?? "")
             } else {
                 print("data가 없거나 decoding실패")
             }
