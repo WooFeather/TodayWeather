@@ -116,8 +116,8 @@ extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
                 cell.weatherLabel.attributedText = attributedText
             } else if indexPath.row == 3 {
                 let attributedText = NSMutableAttributedString(string: "\(viewModel.output.countryNameAndCityName.value.1)의 일출 시각은 \(viewModel.output.sunriseTime.value), 일몰 시각은 \(viewModel.output.sunsetTime.value) 입니다.")
-                attributedText.addAttributes([.font: UIFont.boldSystemFont(ofSize: 17)], range: NSRange(location: viewModel.output.countryNameAndCityName.value.1.count + 8, length: viewModel.output.sunriseTime.value.count))
-                attributedText.addAttributes([.font: UIFont.boldSystemFont(ofSize: 17)], range: NSRange(location: viewModel.output.countryNameAndCityName.value.1.count + 8 + viewModel.output.sunriseTime.value.count + 9, length: viewModel.output.sunriseTime.value.count))
+                attributedText.addAttributes([.font: UIFont.boldSystemFont(ofSize: 17)], range: NSRange(location: viewModel.output.countryNameAndCityName.value.1.count + 9, length: viewModel.output.sunriseTime.value.count))
+                attributedText.addAttributes([.font: UIFont.boldSystemFont(ofSize: 17)], range: NSRange(location: viewModel.output.countryNameAndCityName.value.1.count + 9 + viewModel.output.sunriseTime.value.count + 9, length: viewModel.output.sunriseTime.value.count))
                 
                 cell.weatherLabel.attributedText = attributedText
             } else {
