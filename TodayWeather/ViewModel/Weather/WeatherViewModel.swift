@@ -113,6 +113,7 @@ final class WeatherViewModel: BaseViewModel {
                 let currentTemp = String(format: "%.1f", result.main.temp)
                 let lowTemp = String(format: "%.0f", result.main.tempMin)
                 let highTemp = String(format: "%.0f", result.main.tempMax)
+                let feelsLikeTemp = String(format: "%.0f", result.main.feelsLike)
                 
                 // 일출 및 일몰시간
                 let sunriseTime = self?.convertingUTCtime(result.time.sunrise).toStringUTC(result.time.timezone, format: "a h시 m분")
@@ -120,14 +121,14 @@ final class WeatherViewModel: BaseViewModel {
                 
                 // TODO: 텍스트 일부만 폰트 변경
                 ["현재 온도는 \(currentTemp)° 입니다. 최저\(lowTemp)° 최고\(highTemp)°",
-                 "체감 온도는 \(result.main.feelsLike)° 입니다.",
+                 "체감 온도는 \(feelsLikeTemp)° 입니다.",
                  "\(self?.output.countryNameAndCityName.value.1 ?? "도시")의 일출 시각은 \(sunriseTime ?? ""), 일몰 시각은 \(sunsetTime ?? "") 입니다.",
                  "습도는 \(result.main.humidity)% 이고, 풍속은 \(result.wind.speed)m/s 입니다"
                 ].forEach {
                     self?.output.cellStringList.value.append($0)
                 }
                 
-                print(self?.output.cellStringList.value ?? "")
+//                print(self?.output.cellStringList.value ?? "")
                 self?.output.callRequest.value = ()
             case .failure(let error):
                 // TODO: Alert 띄우기

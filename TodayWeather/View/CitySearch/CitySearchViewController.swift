@@ -24,6 +24,10 @@ final class CitySearchViewController: BaseViewController {
             print("2️⃣ pop")
             self?.navigationController?.popViewController(animated: true)
         }
+        
+        viewModel.output.weatherList.lazyBind { [weak self] _ in
+            self?.citySearchView.cityTableView.reloadData()
+        }
     }
     
     override func configureView() {
@@ -41,15 +45,17 @@ final class CitySearchViewController: BaseViewController {
 // MARK: - Extension
 extension CitySearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.output.cityList.value.count
+        return viewModel.output.weatherList.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CityTableViewCell.id, for: indexPath) as? CityTableViewCell else { return UITableViewCell() }
         
-        let data = viewModel.output.cityList.value[indexPath.row]
+        let cityData = viewModel.output.cityList.value[indexPath.row]
+        let weatherData = viewModel.output.weatherList.value[indexPath.row]
         
-        cell.configureData(data: data)
+        cell.configureCityData(cityData: cityData)
+        cell.configureWeatherData(weatherData: weatherData)
         
         return cell
     }

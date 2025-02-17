@@ -36,7 +36,7 @@ final class IconTableViewCell: BaseTableViewCell {
         }
         
         weatherLabel.snp.makeConstraints { make in
-            make.leading.equalTo(weatherIcon.snp.trailing).offset(8)
+            make.leading.equalTo(weatherIcon.snp.trailing)
             make.verticalEdges.trailing.equalTo(roundBackgroundView).inset(12)
         }
     }

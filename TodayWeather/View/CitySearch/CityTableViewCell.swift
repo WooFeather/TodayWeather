@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 final class CityTableViewCell: BaseTableViewCell {
 
@@ -57,12 +58,13 @@ final class CityTableViewCell: BaseTableViewCell {
         }
         
         iconImageView.snp.makeConstraints { make in
-            make.top.trailing.equalToSuperview().inset(12)
-            make.size.equalTo(30)
+            make.top.equalToSuperview().offset(8)
+            make.trailing.equalToSuperview().inset(12)
+            make.size.equalTo(50)
         }
         
         temperatureLabel.snp.makeConstraints { make in
-            make.top.equalTo(iconImageView.snp.bottom).offset(12)
+            make.top.equalTo(iconImageView.snp.bottom)
             make.trailing.equalToSuperview().offset(-12)
             make.height.equalTo(32)
         }
@@ -79,22 +81,31 @@ final class CityTableViewCell: BaseTableViewCell {
         countryLabel.font = .boldSystemFont(ofSize: 12)
         countryLabel.textColor = .gray
         
-        lowTemperatureLabel.text = "최저 -8°"
         lowTemperatureLabel.font = .boldSystemFont(ofSize: 12)
         lowTemperatureLabel.textColor = .gray
         
-        highTemperatureLabel.text = "최저 88°"
         highTemperatureLabel.font = .boldSystemFont(ofSize: 12)
         highTemperatureLabel.textColor = .gray
         
-        iconImageView.image = UIImage(systemName: "cloud.sun.rain")
+        iconImageView.contentMode = .scaleAspectFill
         
-        temperatureLabel.text = "-88°"
         temperatureLabel.font = .boldSystemFont(ofSize: 30)
     }
     
-    func configureData(data: CityDetail) {
-        cityLabel.text = data.koCityName
-        countryLabel.text = data.koCountryName
+    func configureCityData(cityData: CityDetail) {
+        cityLabel.text = cityData.koCityName
+        countryLabel.text = cityData.koCountryName
+    }
+    
+    func configureWeatherData(weatherData: Weather) {
+        let currentTemp = String(format: "%.1f", weatherData.main.temp)
+        let lowTemp = String(format: "%.0f", weatherData.main.tempMin)
+        let highTemp = String(format: "%.0f", weatherData.main.tempMax)
+        let iconUrl = "https://openweathermap.org/img/wn/\(weatherData.weather[0].icon)@2x.png"
+        
+        lowTemperatureLabel.text = "최저 \(lowTemp)°"
+        highTemperatureLabel.text = "최고 \(highTemp)°"
+        iconImageView.kf.setImage(with: URL(string: iconUrl))
+        temperatureLabel.text = "\(currentTemp)°"
     }
 }

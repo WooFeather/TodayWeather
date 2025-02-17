@@ -10,6 +10,7 @@ import Foundation
 final class CitySearchViewModel: BaseViewModel {
     private(set) var input: Input
     private(set) var output: Output
+    var cityIdList: [String] = []
     
     struct Input {
         let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
@@ -19,6 +20,7 @@ final class CitySearchViewModel: BaseViewModel {
     struct Output {
         let cityList: Observable<[CityDetail]> = Observable([])
         let didSelectRowAt: Observable<Void?> = Observable(nil)
+        let weatherList: Observable<[Weather]> = Observable([])
     }
     
     // MARK: - Initializer
@@ -38,6 +40,9 @@ final class CitySearchViewModel: BaseViewModel {
     func transform() {
         input.viewDidLoadTrigger.lazyBind { [weak self] _ in
             self?.parseJSON()
+            
+//            let idListString = self?.cityIdList.joined(separator: ",")
+//            self?.callGroupWeatherAPI(id: idListString ?? "1835848")
         }
         
         input.didSelectRowAt.lazyBind { [weak self] id in
@@ -62,19 +67,15 @@ final class CitySearchViewModel: BaseViewModel {
             if let city = city {
                 output.cityList.value = city.cities
                 
-                // TODO: 여러 개의 id를 통한 callRequest
-//                var cityIdList: [String] = []
-//                cityIdList.append("\(city.cities[60].id)")
-//                print(cityIdList)
-//                // 베열 안의 id들을 ,로 이어진 string으로 변환
-//                let idListString = cityIdList.joined(separator: ",")
-//
-                // 아래는 WeatherView를 위한 데이터 -> SearchCity용으로 변환 필요
-//                output.countryNameAndCityName.value = (
-//                    city.cities[60].koCountryName,
-//                    city.cities[60].koCityName
-//                )
-//                callRequest(id: idListString)
+                for i in 0..<20 {
+                    cityIdList.append("\(output.cityList.value[i].id)")
+                }
+                
+                print(cityIdList)
+                
+                let idListString = cityIdList.joined(separator: ",")
+                
+                callGroupWeatherAPI(id: idListString)
             } else {
                 print("데이터 파싱 실패")
             }
@@ -83,33 +84,17 @@ final class CitySearchViewModel: BaseViewModel {
         }
     }
     
-    private func callRequest(id: String) {
-        let request = URLRequest(url: OpenWeatherRequest.groupSearch(id: id).endpoint)
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            print(request.url ?? "URL 없음")
-            if let error = error {
-                // TODO: Alert띄우기
+    private func callGroupWeatherAPI(id: String) {
+        NetworkManager.shared.callOpenWeatherAPI(api: .groupSearch(id: id), type: GroupWeather.self) { [weak self] response in
+            switch response {
+            case .success(let value):
+                dump(value)
+                self?.output.weatherList.value = value.list
+            case .failure(let error):
+                // TODO: Alert 띄우기
                 print(error)
-                return
             }
-            
-            guard let response = response as? HTTPURLResponse,
-                  (200..<300).contains(response.statusCode) else {
-                // TODO: 상태코드 대응
-                print(response ?? "")
-                return
-            }
-            
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            
-            if let data = data,
-               let weatherData = try? decoder.decode(GroupWeather.self, from: data) {
-                dump(weatherData)
-            } else {
-                print("data가 없거나 decoding실패")
-            }
-        }.resume()
+        }
     }
     
     private func postId(idValue: Int) {
