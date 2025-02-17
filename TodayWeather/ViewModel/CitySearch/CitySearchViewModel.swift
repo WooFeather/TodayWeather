@@ -25,6 +25,9 @@ final class CitySearchViewModel: BaseViewModel {
         let didSelectRowAt: Observable<Void?> = Observable(nil)
         let weatherList: Observable<[Weather]> = Observable([])
         let searchButtonClicked: Observable<Void?> = Observable(nil)
+        let filteredCityList: Observable<[CityDetail]> = Observable([])
+        let isTableViewHidden: Observable<Bool> = Observable(false)
+        let isEmptyLabelHidden: Observable<Bool> = Observable(true)
     }
     
     // MARK: - Initializer
@@ -78,6 +81,7 @@ final class CitySearchViewModel: BaseViewModel {
             
             if let city = city {
                 output.cityList.value = city.cities
+                output.filteredCityList.value = city.cities
                 
                 for i in 0..<5 {
                     if i == 0 {
@@ -135,6 +139,25 @@ final class CitySearchViewModel: BaseViewModel {
     }
     
     private func searchCity(text: String) {
-        print(text)
+        if text.isEmpty {
+            output.isTableViewHidden.value = false
+            output.isEmptyLabelHidden.value = true
+            self.output.filteredCityList.value = self.output.cityList.value
+        } else {
+            let filteredList = self.output.cityList.value.filter {
+                $0.koCityName.contains(text) || $0.koCountryName.contains(text) || $0.city.contains(text) || $0.country.contains(text)
+            }
+            
+            if filteredList.isEmpty {
+                output.isTableViewHidden.value = true
+                output.isEmptyLabelHidden.value = false
+                print(self.output.filteredCityList.value)
+            } else {
+                output.isTableViewHidden.value = false
+                output.isEmptyLabelHidden.value = true
+                self.output.filteredCityList.value = filteredList
+                print(self.output.filteredCityList.value)
+            }
+        }
     }
 }

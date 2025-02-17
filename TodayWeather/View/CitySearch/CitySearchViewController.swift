@@ -32,6 +32,18 @@ final class CitySearchViewController: BaseViewController {
         viewModel.output.searchButtonClicked.lazyBind { [weak self] _ in
             self?.view.endEditing(true)
         }
+        
+        viewModel.output.filteredCityList.bind { [weak self] _ in
+            self?.citySearchView.cityTableView.reloadData()
+        }
+        
+        viewModel.output.isTableViewHidden.lazyBind { [weak self] status in
+            self?.citySearchView.cityTableView.isHidden = status
+        }
+        
+        viewModel.output.isEmptyLabelHidden.lazyBind { [weak self] status in
+            self?.citySearchView.emptyLabel.isHidden = status
+        }
     }
     
     override func configureView() {
@@ -50,17 +62,17 @@ final class CitySearchViewController: BaseViewController {
 // MARK: - Extension
 extension CitySearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.output.weatherList.value.count
+        viewModel.output.filteredCityList.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CityTableViewCell.id, for: indexPath) as? CityTableViewCell else { return UITableViewCell() }
         
-        let cityData = viewModel.output.cityList.value[indexPath.row]
-        let weatherData = viewModel.output.weatherList.value[indexPath.row]
+        let cityData = viewModel.output.filteredCityList.value[indexPath.row]
+//        let weatherData = viewModel.output.weatherList.value[indexPath.row]
         
         cell.configureCityData(cityData: cityData)
-        cell.configureWeatherData(weatherData: weatherData)
+//        cell.configureWeatherData(weatherData: weatherData)
         
         return cell
     }
