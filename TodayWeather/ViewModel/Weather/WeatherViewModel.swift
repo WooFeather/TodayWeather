@@ -24,6 +24,7 @@ final class WeatherViewModel: BaseViewModel {
         let selectedId: Observable<Int> = Observable(1835848) // TODO: UserDefaults에 저장된 id 사용
         let dateString: Observable<String> = Observable("")
         let iconUrl: Observable<String> = Observable("")
+        let imageUrl: Observable<String> = Observable("")
         let weatherWord: Observable<String> = Observable("")
         let cellStringList: Observable<[String]> = Observable([])
         let callRequest: Observable<Void> = Observable(())
@@ -88,7 +89,7 @@ final class WeatherViewModel: BaseViewModel {
     }
     
     private func callGroupWeatherAPI(id: String) {
-        NetworkManager.shared.callOpenWeatherAPI(api: .groupSearch(id: id), type: GroupWeather.self) { [weak self] response in
+        NetworkManager.shared.callRequest(api: .groupSearch(id: id), type: GroupWeather.self) { [weak self] response in
             switch response {
             case .success(let value):
                 let result = value.list[0]
@@ -128,8 +129,21 @@ final class WeatherViewModel: BaseViewModel {
                     self?.output.cellStringList.value.append($0)
                 }
                 
-//                print(self?.output.cellStringList.value ?? "")
+                self?.callSearchPhotoAPI(query: result.weather[0].description)
+                
                 self?.output.callRequest.value = ()
+            case .failure(let error):
+                // TODO: Alert 띄우기
+                print(error)
+            }
+        }
+    }
+    
+    private func callSearchPhotoAPI(query: String) {
+        NetworkManager.shared.callRequest(api: .searchPhoto(query: query), type: Photo.self) { [weak self] response in
+            switch response {
+            case .success(let value):
+                self?.output.imageUrl.value = value.results[0].urls.thumb
             case .failure(let error):
                 // TODO: Alert 띄우기
                 print(error)

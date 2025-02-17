@@ -41,6 +41,10 @@ final class WeatherViewController: BaseViewController {
         viewModel.output.dateString.lazyBind { [weak self] text in
             self?.weatherView.weatherTableHeaderView.text = text
         }
+        
+        viewModel.output.imageUrl.lazyBind { [weak self] _ in
+            self?.weatherView.weatherTableView.reloadData()
+        }
     }
     
     override func configureData() {
@@ -89,7 +93,7 @@ extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
         } else if indexPath.row == 5 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: PhotoTableViewCell.id, for: indexPath) as? PhotoTableViewCell else { return UITableViewCell() }
             
-            // TODO: UnsplashAPI를 이용해 사진 보여주기
+            cell.todayPhoto.kf.setImage(with: URL(string: viewModel.output.imageUrl.value))
             
             return cell
         } else {

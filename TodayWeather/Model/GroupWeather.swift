@@ -34,10 +34,12 @@ struct TimeDetail: Decodable {
 
 struct WeatherDetail: Decodable {
     let word: String
+    let description: String
     let icon: String
     
     enum CodingKeys: String, CodingKey {
         case word = "main" // "맑음" 등의 날씨를 나타내는 단어
+        case description
         case icon
     }
 }

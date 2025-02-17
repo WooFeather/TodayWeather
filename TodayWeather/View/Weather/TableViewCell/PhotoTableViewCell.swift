@@ -24,8 +24,8 @@ final class PhotoTableViewCell: BaseTableViewCell {
     
     override func configureLayout() {
         roundBackgroundView.snp.makeConstraints { make in
-            make.top.leading.equalTo(contentView).inset(12)
-            make.trailing.lessThanOrEqualTo(contentView).inset(12)
+            make.top.equalTo(contentView).inset(12)
+            make.horizontalEdges.equalTo(contentView).inset(12)
             make.bottom.equalTo(contentView)
         }
         
@@ -48,7 +48,6 @@ final class PhotoTableViewCell: BaseTableViewCell {
         photoLabel.text = "오늘의 사진"
         photoLabel.font = .systemFont(ofSize: 17)
         
-        todayPhoto.image = .sample
         todayPhoto.contentMode = .scaleAspectFill
         todayPhoto.layer.cornerRadius = 6
         todayPhoto.clipsToBounds = true

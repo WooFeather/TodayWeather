@@ -12,7 +12,7 @@ final class NetworkManager {
     
     private init() { }
     
-    func callOpenWeatherAPI<T: Decodable>(api: OpenWeatherRequest, type: T.Type, completionHandler: @escaping (Result<T, Error>) -> Void) {
+    func callRequest<T: Decodable>(api: APIRequest, type: T.Type, completionHandler: @escaping (Result<T, Error>) -> Void) {
         let request = URLRequest(url: api.endpoint)
         URLSession.shared.dataTask(with: request) { data, response, error in
             print(request.url ?? "URL 없음")

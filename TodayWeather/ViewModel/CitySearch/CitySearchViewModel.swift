@@ -107,7 +107,7 @@ final class CitySearchViewModel: BaseViewModel {
     }
     
     private func callGroupWeatherAPI(id: String) {
-        NetworkManager.shared.callOpenWeatherAPI(api: .groupSearch(id: id), type: GroupWeather.self) { [weak self] response in
+        NetworkManager.shared.callRequest(api: .groupSearch(id: id), type: GroupWeather.self) { [weak self] response in
             switch response {
             case .success(let value):
                 dump(value)
