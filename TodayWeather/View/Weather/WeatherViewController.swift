@@ -87,7 +87,11 @@ extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: IconTableViewCell.id, for: indexPath) as? IconTableViewCell else { return UITableViewCell() }
             
             cell.weatherIcon.kf.setImage(with: URL(string: viewModel.output.iconUrl.value))
-            cell.weatherLabel.text = "오늘의 날씨는 \(viewModel.output.weatherWord.value)입니다."
+            
+            let weatherString = NSMutableAttributedString(string: "오늘의 날씨는 \(viewModel.output.weatherWord.value)입니다.")
+            weatherString.addAttributes([.font: UIFont.boldSystemFont(ofSize: 17)], range: NSRange(location: 8, length: viewModel.output.weatherWord.value.count))
+            
+            cell.weatherLabel.attributedText = weatherString
             
             return cell
         } else if indexPath.row == 5 {
@@ -99,11 +103,29 @@ extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TextTableViewCell.id, for: indexPath) as? TextTableViewCell else { return UITableViewCell() }
             
-            if viewModel.output.cellStringList.value.isEmpty {
-                cell.weatherLabel.text = ""
+            if indexPath.row == 1 {
+                let attributedText = NSMutableAttributedString(string: "현재 온도는 \(viewModel.output.currentTemp.value)° 입니다. 최저\(viewModel.output.lowTemp.value)° 최고\(viewModel.output.highTemp.value)°")
+                attributedText.addAttributes([.font: UIFont.boldSystemFont(ofSize: 17)], range: NSRange(location: 7, length: viewModel.output.currentTemp.value.count + 1))
+                attributedText.addAttributes([.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.lightGray], range: NSRange(location: 7 + viewModel.output.currentTemp.value.count + 7, length: viewModel.output.lowTemp.value.count + viewModel.output.highTemp.value.count + 7))
+                
+                cell.weatherLabel.attributedText = attributedText
+            } else if indexPath.row == 2 {
+                let attributedText = NSMutableAttributedString(string: "체감 온도는 \(viewModel.output.feelsLikeTemp.value)° 입니다.")
+                attributedText.addAttributes([.font: UIFont.boldSystemFont(ofSize: 17)], range: NSRange(location: 7, length: viewModel.output.feelsLikeTemp.value.count + 1))
+                
+                cell.weatherLabel.attributedText = attributedText
+            } else if indexPath.row == 3 {
+                let attributedText = NSMutableAttributedString(string: "\(viewModel.output.countryNameAndCityName.value.1)의 일출 시각은 \(viewModel.output.sunriseTime.value), 일몰 시각은 \(viewModel.output.sunsetTime.value) 입니다.")
+                attributedText.addAttributes([.font: UIFont.boldSystemFont(ofSize: 17)], range: NSRange(location: viewModel.output.countryNameAndCityName.value.1.count + 8, length: viewModel.output.sunriseTime.value.count))
+                attributedText.addAttributes([.font: UIFont.boldSystemFont(ofSize: 17)], range: NSRange(location: viewModel.output.countryNameAndCityName.value.1.count + 8 + viewModel.output.sunriseTime.value.count + 9, length: viewModel.output.sunriseTime.value.count))
+                
+                cell.weatherLabel.attributedText = attributedText
             } else {
-                let data = viewModel.output.cellStringList.value[indexPath.row - 1]
-                cell.weatherLabel.text = data
+                let attributedText = NSMutableAttributedString(string: "습도는 \(viewModel.output.humidity.value)% 이고, 풍속은 \(viewModel.output.windSpeed.value)m/s 입니다")
+                attributedText.addAttributes([.font: UIFont.boldSystemFont(ofSize: 17)], range: NSRange(location: 4, length: String(viewModel.output.humidity.value).count + 1))
+                attributedText.addAttributes([.font: UIFont.boldSystemFont(ofSize: 17)], range: NSRange(location: 4 + String(viewModel.output.humidity.value).count + 10, length: String(viewModel.output.windSpeed.value).count + 3))
+                
+                cell.weatherLabel.attributedText = attributedText
             }
             
             return cell

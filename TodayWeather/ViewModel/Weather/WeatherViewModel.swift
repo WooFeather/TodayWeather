@@ -25,8 +25,16 @@ final class WeatherViewModel: BaseViewModel {
         let iconUrl: Observable<String> = Observable("")
         let imageUrl: Observable<String> = Observable("")
         let weatherWord: Observable<String> = Observable("")
-        let cellStringList: Observable<[String]> = Observable([])
         let callRequest: Observable<Void> = Observable(())
+        
+        let currentTemp: Observable<String> = Observable("")
+        let lowTemp: Observable<String> = Observable("")
+        let highTemp: Observable<String> = Observable("")
+        let feelsLikeTemp: Observable<String> = Observable("")
+        let sunriseTime: Observable<String> = Observable("")
+        let sunsetTime: Observable<String> = Observable("")
+        let humidity: Observable<Int> = Observable(-1)
+        let windSpeed: Observable<Double> = Observable(0.0)
     }
     
     // MARK: - Initializer
@@ -105,27 +113,18 @@ final class WeatherViewModel: BaseViewModel {
                     }
                 }
                 
-                // cell에 들어갈 날씨 정보 초기화
-                self?.output.cellStringList.value = []
-                
                 // 소수점 아래 자르기
-                let currentTemp = String(format: "%.1f", result.main.temp)
-                let lowTemp = String(format: "%.0f", result.main.tempMin)
-                let highTemp = String(format: "%.0f", result.main.tempMax)
-                let feelsLikeTemp = String(format: "%.0f", result.main.feelsLike)
+                self?.output.currentTemp.value = String(format: "%.1f", result.main.temp)
+                self?.output.lowTemp.value = String(format: "%.0f", result.main.tempMin)
+                self?.output.highTemp.value = String(format: "%.0f", result.main.tempMax)
+                self?.output.feelsLikeTemp.value = String(format: "%.0f", result.main.feelsLike)
                 
                 // 일출 및 일몰시간
-                let sunriseTime = self?.convertingUTCtime(result.time.sunrise).toStringUTC(result.time.timezone, format: "a h시 m분")
-                let sunsetTime = self?.convertingUTCtime(result.time.sunset).toStringUTC(result.time.timezone, format: "a h시 m분")
+                self?.output.sunriseTime.value = self?.convertingUTCtime(result.time.sunrise).toStringUTC(result.time.timezone, format: "a h시 m분") ?? ""
+                self?.output.sunsetTime.value = self?.convertingUTCtime(result.time.sunset).toStringUTC(result.time.timezone, format: "a h시 m분") ?? ""
                 
-                // TODO: 텍스트 일부만 폰트 변경
-                ["현재 온도는 \(currentTemp)° 입니다. 최저\(lowTemp)° 최고\(highTemp)°",
-                 "체감 온도는 \(feelsLikeTemp)° 입니다.",
-                 "\(self?.output.countryNameAndCityName.value.1 ?? "도시")의 일출 시각은 \(sunriseTime ?? ""), 일몰 시각은 \(sunsetTime ?? "") 입니다.",
-                 "습도는 \(result.main.humidity)% 이고, 풍속은 \(result.wind.speed)m/s 입니다"
-                ].forEach {
-                    self?.output.cellStringList.value.append($0)
-                }
+                self?.output.humidity.value = result.main.humidity
+                self?.output.windSpeed.value = result.wind.speed
                 
                 self?.callSearchPhotoAPI(query: result.weather[0].description)
                 
@@ -148,20 +147,6 @@ final class WeatherViewModel: BaseViewModel {
             }
         }
     }
-    
-//    private func findIndex(array: [CityDetail]) -> Int {
-//        var arrayIndex: Int
-//        
-//        for index in 0..<array.count {
-//            if array[index].id == output.selectedId.value {
-//                arrayIndex = index
-//            } else {
-//                arrayIndex = 60
-//            }
-//        }
-//        
-//        return arrayIndex
-//    }
     
     private func convertingUTCtime(_ dt: Int) -> Date {
         let timeInterval = TimeInterval("\(dt)")!
