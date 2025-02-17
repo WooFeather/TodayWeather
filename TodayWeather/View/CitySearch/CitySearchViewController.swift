@@ -33,7 +33,7 @@ final class CitySearchViewController: BaseViewController {
             self?.view.endEditing(true)
         }
         
-        viewModel.output.filteredCityList.bind { [weak self] _ in
+        viewModel.output.filteredCityList.lazyBind { [weak self] _ in
             self?.citySearchView.cityTableView.reloadData()
         }
         
@@ -68,22 +68,26 @@ extension CitySearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CityTableViewCell.id, for: indexPath) as? CityTableViewCell else { return UITableViewCell() }
         
-        let cityData = viewModel.output.filteredCityList.value[indexPath.row]
-//        let weatherData = viewModel.output.weatherList.value[indexPath.row]
+        print("CITY", viewModel.output.filteredCityList.value.count)
+        print("WEATHER", viewModel.output.weatherList.value.count)
         
+        let cityData = viewModel.output.filteredCityList.value[indexPath.row]
         cell.configureCityData(cityData: cityData)
-//        cell.configureWeatherData(weatherData: weatherData)
+        
+        if viewModel.output.weatherList.value.count == viewModel.output.filteredCityList.value.count {
+            let weatherData = viewModel.output.weatherList.value[indexPath.row]
+            cell.configureWeatherData(weatherData: weatherData)
+        }
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let data = viewModel.output.cityList.value[indexPath.row]
+        let data = viewModel.output.filteredCityList.value[indexPath.row]
         viewModel.input.didSelectRowAt.value = data.id
     }
 }
 
-// TODO: 검색기능 구현
 extension CitySearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         viewModel.input.searchTextDidChange.value = searchText

@@ -86,7 +86,7 @@ final class CitySearchViewModel: BaseViewModel {
                 for i in 0..<5 {
                     if i == 0 {
                         for j in 0..<20 {
-                            cityIdList.append("\(output.cityList.value[j].id)")
+                            cityIdList.append("\(output.filteredCityList.value[j].id)")
                         }
                         
                         idListString = cityIdList.joined(separator: ",")
@@ -95,7 +95,7 @@ final class CitySearchViewModel: BaseViewModel {
                         cityIdList = []
                     } else if i == 4 {
                         for j in i * 20..<city.cities.count {
-                            cityIdList.append("\(output.cityList.value[j].id)")
+                            cityIdList.append("\(output.filteredCityList.value[j].id)")
                         }
                         
                         idListString = cityIdList.joined(separator: ",")
@@ -104,7 +104,7 @@ final class CitySearchViewModel: BaseViewModel {
                         cityIdList = []
                     } else {
                         for j in i * 20..<i * 20 + 20 {
-                            cityIdList.append("\(output.cityList.value[j].id)")
+                            cityIdList.append("\(output.filteredCityList.value[j].id)")
                         }
                         
                         idListString = cityIdList.joined(separator: ",")
