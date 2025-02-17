@@ -16,12 +16,15 @@ final class CitySearchViewModel: BaseViewModel {
     struct Input {
         let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
         let didSelectRowAt: Observable<Int?> = Observable(nil)
+        let searchTextDidChange: Observable<String?> = Observable("")
+        let searchButtonClicked: Observable<String?> = Observable("")
     }
     
     struct Output {
         let cityList: Observable<[CityDetail]> = Observable([])
         let didSelectRowAt: Observable<Void?> = Observable(nil)
         let weatherList: Observable<[Weather]> = Observable([])
+        let searchButtonClicked: Observable<Void?> = Observable(nil)
     }
     
     // MARK: - Initializer
@@ -47,6 +50,17 @@ final class CitySearchViewModel: BaseViewModel {
             guard let idValue = id else { return }
             self?.saveId(idValue: idValue)
             self?.output.didSelectRowAt.value = ()
+        }
+        
+        input.searchTextDidChange.lazyBind { [weak self] text in
+            guard let text = text else { return }
+            self?.searchCity(text: text)
+        }
+        
+        input.searchButtonClicked.lazyBind { [weak self] text in
+            guard let text = text else { return }
+            self?.searchCity(text: text)
+            self?.output.searchButtonClicked.value = ()
         }
     }
     
@@ -118,5 +132,9 @@ final class CitySearchViewModel: BaseViewModel {
     
     private func saveId(idValue: Int) {
         UserDefaultsManager.cityId = idValue
+    }
+    
+    private func searchCity(text: String) {
+        print(text)
     }
 }

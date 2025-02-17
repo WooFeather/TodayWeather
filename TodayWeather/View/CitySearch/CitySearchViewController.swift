@@ -28,6 +28,10 @@ final class CitySearchViewController: BaseViewController {
         viewModel.output.weatherList.lazyBind { [weak self] _ in
             self?.citySearchView.cityTableView.reloadData()
         }
+        
+        viewModel.output.searchButtonClicked.lazyBind { [weak self] _ in
+            self?.view.endEditing(true)
+        }
     }
     
     override func configureView() {
@@ -39,6 +43,7 @@ final class CitySearchViewController: BaseViewController {
         citySearchView.cityTableView.delegate = self
         citySearchView.cityTableView.dataSource = self
         citySearchView.cityTableView.register(CityTableViewCell.self, forCellReuseIdentifier: CityTableViewCell.id)
+        citySearchView.citySearchBar.delegate = self
     }
 }
 
@@ -67,3 +72,12 @@ extension CitySearchViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 // TODO: 검색기능 구현
+extension CitySearchViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        viewModel.input.searchTextDidChange.value = searchText
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.input.searchButtonClicked.value = searchBar.text
+    }
+}
