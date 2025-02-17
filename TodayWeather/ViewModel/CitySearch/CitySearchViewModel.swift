@@ -41,14 +41,11 @@ final class CitySearchViewModel: BaseViewModel {
     func transform() {
         input.viewDidLoadTrigger.lazyBind { [weak self] _ in
             self?.parseJSON()
-            
-//            let idListString = self?.cityIdList.joined(separator: ",")
-//            self?.callGroupWeatherAPI(id: idListString ?? "1835848")
         }
         
         input.didSelectRowAt.lazyBind { [weak self] id in
             guard let idValue = id else { return }
-            self?.postId(idValue: idValue)
+            self?.saveId(idValue: idValue)
             self?.output.didSelectRowAt.value = ()
         }
     }
@@ -119,14 +116,7 @@ final class CitySearchViewModel: BaseViewModel {
         }
     }
     
-    private func postId(idValue: Int) {
-        NotificationCenter.default.post(
-            name: NSNotification.Name("IdReceived"),
-            object: nil,
-            userInfo: [
-                "idValue": idValue
-            ]
-        )
-        print("1️⃣", idValue)
+    private func saveId(idValue: Int) {
+        UserDefaultsManager.cityId = idValue
     }
 }
