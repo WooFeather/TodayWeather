@@ -10,7 +10,8 @@ import Foundation
 final class CitySearchViewModel: BaseViewModel {
     private(set) var input: Input
     private(set) var output: Output
-    var cityIdList: [String] = []
+    private var idListString = ""
+    private var cityIdList: [String] = []
     
     struct Input {
         let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
@@ -67,15 +68,36 @@ final class CitySearchViewModel: BaseViewModel {
             if let city = city {
                 output.cityList.value = city.cities
                 
-                for i in 0..<20 {
-                    cityIdList.append("\(output.cityList.value[i].id)")
+                for i in 0..<5 {
+                    if i == 0 {
+                        for j in 0..<20 {
+                            cityIdList.append("\(output.cityList.value[j].id)")
+                        }
+                        
+                        idListString = cityIdList.joined(separator: ",")
+                        
+                        callGroupWeatherAPI(id: idListString)
+                        cityIdList = []
+                    } else if i == 4 {
+                        for j in i * 20..<city.cities.count {
+                            cityIdList.append("\(output.cityList.value[j].id)")
+                        }
+                        
+                        idListString = cityIdList.joined(separator: ",")
+                        
+                        callGroupWeatherAPI(id: idListString)
+                        cityIdList = []
+                    } else {
+                        for j in i * 20..<i * 20 + 20 {
+                            cityIdList.append("\(output.cityList.value[j].id)")
+                        }
+                        
+                        idListString = cityIdList.joined(separator: ",")
+                        
+                        callGroupWeatherAPI(id: idListString)
+                        cityIdList = []
+                    }
                 }
-                
-                print(cityIdList)
-                
-                let idListString = cityIdList.joined(separator: ",")
-                
-                callGroupWeatherAPI(id: idListString)
             } else {
                 print("데이터 파싱 실패")
             }
@@ -89,7 +111,7 @@ final class CitySearchViewModel: BaseViewModel {
             switch response {
             case .success(let value):
                 dump(value)
-                self?.output.weatherList.value = value.list
+                self?.output.weatherList.value.append(contentsOf: value.list)
             case .failure(let error):
                 // TODO: Alert 띄우기
                 print(error)

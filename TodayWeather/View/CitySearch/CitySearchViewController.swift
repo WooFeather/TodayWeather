@@ -45,7 +45,7 @@ final class CitySearchViewController: BaseViewController {
 // MARK: - Extension
 extension CitySearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.output.weatherList.value.count
+        viewModel.output.weatherList.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
