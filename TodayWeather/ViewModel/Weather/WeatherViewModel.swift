@@ -79,15 +79,14 @@ final class WeatherViewModel: BaseViewModel {
             city = try decoder.decode(City.self, from: jsonData)
             
             if let city = city {
-                for index in 0..<city.cities.count {
-                    if city.cities[index].id == UserDefaultsManager.cityId {
-                        print("4️⃣ parsing", UserDefaultsManager.cityId)
-                        output.countryNameAndCityName.value = (
-                            city.cities[index].koCountryName,
-                            city.cities[index].koCityName
-                        )
-                    }
-                }
+                let index = findIndex(array: city.cities)
+                
+                print("4️⃣ parsing", UserDefaultsManager.cityId)
+                
+                output.countryNameAndCityName.value = (
+                    city.cities[index].koCountryName,
+                    city.cities[index].koCityName
+                )
             }
         } catch {
             print("ERROR: \(error)")
@@ -152,5 +151,17 @@ final class WeatherViewModel: BaseViewModel {
         let timeInterval = TimeInterval("\(dt)")!
         let utcTime = Date(timeIntervalSince1970: timeInterval)
         return utcTime
+    }
+    
+    private func findIndex(array: [CityDetail]) -> Int {
+        var arrayIndex: Int = 60
+        
+        for index in 0..<array.count {
+            if array[index].id == UserDefaultsManager.cityId {
+                arrayIndex = index
+            }
+        }
+        
+        return arrayIndex
     }
 }
