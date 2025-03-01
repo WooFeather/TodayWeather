@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Observable<T> {
+class DPObservable<T> {
     private var closure: ((T) -> Void)?
     
     var value: T {
