@@ -6,46 +6,49 @@
 //
 
 import Foundation
+import RxSwift
 
 final class NetworkManager {
     static let shared = NetworkManager()
     
     private init() { }
     
-    func callRequest<T: Decodable>(api: APIRequest, type: T.Type, completionHandler: @escaping (Result<T, Error>) -> Void) {
-        
-        
-        let request = URLRequest(url: api.endpoint)
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            print(request.url ?? "URL 없음")
-            if let error = error {
-                print(error)
-                DispatchQueue.main.async {
-                    completionHandler(.failure(NetworkError.invalidURL))
-                }
-                return
-            }
+    func callRequest<T: Decodable>(api: APIRequest, type: T.Type) -> Single<T> {
+        return Single.create { value in
+            let request = URLRequest(url: api.endpoint)
             
-            guard let response = response as? HTTPURLResponse,
-                  (200..<300).contains(response.statusCode) else {
-                // TODO: 상태코드 대응
-                print(response ?? "")
-                return
-            }
-            
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            
-            if let data = data,
-               let result = try? decoder.decode(T.self, from: data) {
-                DispatchQueue.main.async {
-                    completionHandler(.success(result))
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                print(request.url ?? "URL 없음")
+                if let error = error {
+                    value(.failure(NetworkError.invalidURL))
+                    return
                 }
-            } else {
-                DispatchQueue.main.async {
-                    completionHandler(.failure(NetworkError.decodingError))
+                
+                guard let response = response as? HTTPURLResponse,
+                      (200..<300).contains(response.statusCode) else {
+                    // TODO: 상태코드 대응
+                    value(.failure(NetworkError.decodingError))
+                    return
                 }
+                
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                
+                guard let data = data else {
+                    return value(.failure(NetworkError.decodingError))
+                }
+                
+                do {
+                    let result = try decoder.decode(T.self, from: data)
+                    value(.success(result))
+                } catch {
+                    value(.failure(NetworkError.missingData))
+                }
+            }.resume()
+            
+            return Disposables.create {
+                print("🗑️ Disposed")
             }
-        }.resume()
+        }
     }
 }

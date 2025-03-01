@@ -122,16 +122,16 @@ final class DPCitySearchViewModel: BaseViewModel {
     }
     
     private func callGroupWeatherAPI(id: String) {
-        NetworkManager.shared.callRequest(api: .groupSearch(id: id), type: GroupWeather.self) { [weak self] response in
-            switch response {
-            case .success(let value):
-                dump(value)
-                self?.output.weatherList.value.append(contentsOf: value.list)
-            case .failure(let error):
-                // TODO: Alert 띄우기
-                print(error)
-            }
-        }
+//        NetworkManager.shared.callRequest(api: .groupSearch(id: id), type: GroupWeather.self) { [weak self] response in
+//            switch response {
+//            case .success(let value):
+//                dump(value)
+//                self?.output.weatherList.value.append(contentsOf: value.list)
+//            case .failure(let error):
+//                // TODO: Alert 띄우기
+//                print(error)
+//            }
+//        }
     }
     
     private func saveId(idValue: Int) {

@@ -99,57 +99,57 @@ final class DPWeatherViewModel: BaseViewModel {
     }
     
     private func callGroupWeatherAPI(id: String) {
-        NetworkManager.shared.callRequest(api: .groupSearch(id: id), type: GroupWeather.self) { [weak self] response in
-            switch response {
-            case .success(let value):
-                let result = value.list[0]
-                
-                self?.output.dateString.value = Date().toStringUTC(result.time.timezone, format: "M월 d일(E) a h시 m분")
-                
-                let iconUrl = "https://openweathermap.org/img/wn/\(result.weather[0].icon)@2x.png"
-                
-                self?.output.iconUrl.value = iconUrl
-                
-                // weather word를 한글로 변환
-                for i in 0..<(self?.words.count ?? 0) {
-                    if result.weather[0].word == self?.words[i].rawValue {
-                        self?.output.weatherWord.value = self?.words[i].koreanWord ?? ""
-                    }
-                }
-                
-                // 소수점 아래 자르기
-                self?.output.currentTemp.value = String(format: "%.1f", result.main.temp)
-                self?.output.lowTemp.value = String(format: "%.0f", result.main.tempMin)
-                self?.output.highTemp.value = String(format: "%.0f", result.main.tempMax)
-                self?.output.feelsLikeTemp.value = String(format: "%.0f", result.main.feelsLike)
-                
-                // 일출 및 일몰시간
-                self?.output.sunriseTime.value = self?.convertingUTCtime(result.time.sunrise).toStringUTC(result.time.timezone, format: "a h시 m분") ?? ""
-                self?.output.sunsetTime.value = self?.convertingUTCtime(result.time.sunset).toStringUTC(result.time.timezone, format: "a h시 m분") ?? ""
-                
-                self?.output.humidity.value = result.main.humidity
-                self?.output.windSpeed.value = result.wind.speed
-                
-                self?.callSearchPhotoAPI(query: result.weather[0].description)
-                
-                self?.output.callRequest.value = ()
-            case .failure(let error):
-                // TODO: Alert 띄우기
-                print(error)
-            }
-        }
+//        NetworkManager.shared.callRequest(api: .groupSearch(id: id), type: GroupWeather.self) { [weak self] response in
+//            switch response {
+//            case .success(let value):
+//                let result = value.list[0]
+//                
+//                self?.output.dateString.value = Date().toStringUTC(result.time.timezone, format: "M월 d일(E) a h시 m분")
+//                
+//                let iconUrl = "https://openweathermap.org/img/wn/\(result.weather[0].icon)@2x.png"
+//                
+//                self?.output.iconUrl.value = iconUrl
+//                
+//                // weather word를 한글로 변환
+//                for i in 0..<(self?.words.count ?? 0) {
+//                    if result.weather[0].word == self?.words[i].rawValue {
+//                        self?.output.weatherWord.value = self?.words[i].koreanWord ?? ""
+//                    }
+//                }
+//                
+//                // 소수점 아래 자르기
+//                self?.output.currentTemp.value = String(format: "%.1f", result.main.temp)
+//                self?.output.lowTemp.value = String(format: "%.0f", result.main.tempMin)
+//                self?.output.highTemp.value = String(format: "%.0f", result.main.tempMax)
+//                self?.output.feelsLikeTemp.value = String(format: "%.0f", result.main.feelsLike)
+//                
+//                // 일출 및 일몰시간
+//                self?.output.sunriseTime.value = self?.convertingUTCtime(result.time.sunrise).toStringUTC(result.time.timezone, format: "a h시 m분") ?? ""
+//                self?.output.sunsetTime.value = self?.convertingUTCtime(result.time.sunset).toStringUTC(result.time.timezone, format: "a h시 m분") ?? ""
+//                
+//                self?.output.humidity.value = result.main.humidity
+//                self?.output.windSpeed.value = result.wind.speed
+//                
+//                self?.callSearchPhotoAPI(query: result.weather[0].description)
+//                
+//                self?.output.callRequest.value = ()
+//            case .failure(let error):
+//                // TODO: Alert 띄우기
+//                print(error)
+//            }
+//        }
     }
     
     private func callSearchPhotoAPI(query: String) {
-        NetworkManager.shared.callRequest(api: .searchPhoto(query: query), type: Photo.self) { [weak self] response in
-            switch response {
-            case .success(let value):
-                self?.output.imageUrl.value = value.results[0].urls.thumb
-            case .failure(let error):
-                // TODO: Alert 띄우기
-                print(error)
-            }
-        }
+//        NetworkManager.shared.callRequest(api: .searchPhoto(query: query), type: Photo.self) { [weak self] response in
+//            switch response {
+//            case .success(let value):
+//                self?.output.imageUrl.value = value.results[0].urls.thumb
+//            case .failure(let error):
+//                // TODO: Alert 띄우기
+//                print(error)
+//            }
+//        }
     }
     
     private func convertingUTCtime(_ dt: Int) -> Date {
